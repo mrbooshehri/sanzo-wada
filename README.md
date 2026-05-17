@@ -129,3 +129,9 @@ To change the app name, theme colour, or background colour, edit `manifest.json`
 - **Gradle 8.2.1** + **Android SDK 34** for the APK
 - **sharp** for SVG → PNG icon generation (runs only at build time)
 - Everything orchestrated with **Docker multi-stage builds**
+
+---
+
+## License
+
+[MIT](LICENSE) © 2026 Mohammadreza Booshehri
