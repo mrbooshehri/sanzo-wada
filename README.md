@@ -1,5 +1,18 @@
 # Sanzo Wada Atlas
 
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="assets/1.png" alt="Color grid — light mode" /></td>
+    <td><img src="assets/2.png" alt="Color grid — dark mode" /></td>
+  </tr>
+  <tr>
+    <td><img src="assets/3.png" alt="Color detail page" /></td>
+    <td><img src="assets/4.png" alt="Combination previews" /></td>
+  </tr>
+</table>
+
 A modern color browser for the [Sanzo Wada](https://en.wikipedia.org/wiki/Sanzo_Wada) palette — the classic 1930s Japanese color studies behind *A Dictionary of Color Combinations*. Runs fully offline from local data, with no external API dependencies.
 
 Available as a **web app** (Docker + nginx) and an **Android APK** (Capacitor). Everything builds inside Docker — no Node, Android Studio, or SDK needed on your machine.
