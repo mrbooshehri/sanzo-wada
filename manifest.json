@@ -1,0 +1,14 @@
+{
+  "name": "Sanzo Wada Atlas",
+  "short_name": "Sanzo Wada",
+  "description": "A modern Sanzo Wada color browser with local data, themes, and combination previews.",
+  "icons": [
+    { "src": "/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon.svg",        "sizes": "any",     "type": "image/svg+xml" }
+  ],
+  "theme_color": "#7da8d7",
+  "background_color": "#ecf4ff",
+  "display": "standalone",
+  "start_url": "/"
+}

@@ -1,0 +1,8 @@
+{
+  "appId": "io.gite.sanzowada",
+  "appName": "Sanzo Wada Atlas",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  }
+}

@@ -1,0 +1,54 @@
+# ── Stage 1: Capacitor + Android project generation ────────────
+FROM node:20-alpine AS capacitor
+
+WORKDIR /app
+
+COPY package.json ./
+RUN npm install
+# sharp is needed for icon generation — install once, reuse for both scripts
+RUN npm install sharp
+
+COPY icon.svg generate-favicon.mjs generate-icons.mjs ./
+
+RUN mkdir -p www
+COPY index.html style.css app.js manifest.json ./www/
+COPY data/ ./www/data/
+
+# Generate favicon PNGs into www/ so they're bundled inside the app WebView
+RUN node generate-favicon.mjs && mv favicon-*.png www/
+COPY icon.svg ./www/
+
+COPY capacitor.config.json ./
+
+RUN npx cap add android
+RUN npx cap sync android
+
+# Remove the google-services classpath — no google-services.json in this project
+RUN sed -i "/classpath 'com.google.gms:google-services/d" android/build.gradle
+RUN chmod +x android/gradlew
+
+# Replace all Android launcher icon sizes with our custom icon
+RUN node generate-icons.mjs
+
+# ── Stage 2: Build APK ──────────────────────────────────────────
+FROM mobiledevops/android-sdk-image:34.0.0 AS builder
+
+# The image ships JDK 22 which is too new for Gradle 8.2.1 — use JDK 17 instead
+COPY --from=eclipse-temurin:17 /opt/java/openjdk /opt/java/jdk17
+ENV JAVA_HOME=/opt/java/jdk17
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+WORKDIR /home/mobiledevops/app
+
+COPY --chown=mobiledevops:mobiledevops --from=capacitor /app/android ./android
+# capacitor.settings.gradle resolves capacitor-android via ../node_modules/...
+COPY --chown=mobiledevops:mobiledevops --from=capacitor /app/node_modules/@capacitor/android/capacitor ./node_modules/@capacitor/android/capacitor
+
+WORKDIR /home/mobiledevops/app/android
+
+# gradlew downloads Gradle 8.2.1 via the VPN (--network=host on the build command)
+RUN ./gradlew assembleDebug --no-daemon
+
+# ── Stage 3: Export artifact ────────────────────────────────────
+FROM scratch AS artifact
+COPY --from=builder /home/mobiledevops/app/android/app/build/outputs/apk/debug/app-debug.apk /sanzo-wada.apk

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sanzo Wada Atlas</title>
+    <meta
+      name="description"
+      content="A modern Sanzo Wada color browser with local data, themes, and combination previews."
+    />
+    <meta name="theme-color" content="#7da8d7" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/favicon-180.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a href="/" data-link class="brand-mark">Sanzo Wada Atlas</a>
+
+        <label class="topbar-search">
+          <input
+            id="global-search"
+            type="search"
+            placeholder="Search colors, hex, combinations..."
+            autocomplete="off"
+          />
+        </label>
+
+        <nav class="topbar-actions">
+          <a href="/" data-link class="topbar-link">Colors</a>
+          <a href="/about" data-link class="topbar-link">About</a>
+          <button id="theme-toggle" type="button" class="topbar-button icon-button" aria-label="Toggle theme">
+            <span class="theme-icon theme-icon-light" aria-hidden="true">☀</span>
+            <span class="theme-icon theme-icon-dark" aria-hidden="true">☾</span>
+          </button>
+        </nav>
+      </header>
+
+      <nav id="breadcrumbs" class="breadcrumbs"></nav>
+
+      <main id="app" class="app-shell">
+        <section class="panel state-panel">
+          <p>Loading colors...</p>
+        </section>
+      </main>
+    </div>
+
+    <template id="home-template">
+      <section class="view-stack">
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Local Collection</p>
+              <h2 id="results-title">157 colors</h2>
+            </div>
+            <div class="catalog-toolbar">
+              <label class="field compact-field">
+                <select id="sort-select" aria-label="Sort colors">
+                  <option value="index">Book order</option>
+                  <option value="popular">Most used</option>
+                  <option value="name">Name A-Z</option>
+                </select>
+              </label>
+
+              <div class="segmented-control icon-segments" aria-label="View mode">
+                <button id="grid-view-button" type="button" class="segment is-active" aria-label="Grid view">
+                  <span class="view-icon grid-icon" aria-hidden="true"></span>
+                </button>
+                <button id="list-view-button" type="button" class="segment" aria-label="List view">
+                  <span class="view-icon list-icon" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <p id="results-meta" class="results-meta"></p>
+          <div id="color-grid" class="color-grid"></div>
+        </section>
+      </section>
+    </template>
+
+    <template id="swatch-template">
+      <section class="view-stack">
+        <section class="panel swatch-hero">
+          <div id="swatch-hero-chip" class="hero-swatch"></div>
+          <div class="swatch-copy">
+            <p id="swatch-index" class="section-kicker"></p>
+            <h1 id="swatch-name"></h1>
+            <p id="swatch-hex" class="swatch-hex"></p>
+            <p id="swatch-summary" class="lede compact"></p>
+          </div>
+        </section>
+
+        <section class="panel meta-panel">
+          <div class="meta-grid">
+            <article class="meta-card">
+              <span>RGB</span>
+              <strong id="swatch-rgb"></strong>
+            </article>
+            <article class="meta-card">
+              <span>CMYK</span>
+              <strong id="swatch-cmyk"></strong>
+            </article>
+            <article class="meta-card">
+              <span>Slug</span>
+              <strong id="swatch-slug"></strong>
+            </article>
+            <article class="meta-card">
+              <span>Use Count</span>
+              <strong id="swatch-uses"></strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Combination Previews</p>
+              <h2>Used In</h2>
+            </div>
+          </div>
+          <div id="swatch-combinations" class="combo-list"></div>
+        </section>
+      </section>
+    </template>
+
+    <template id="combination-template">
+      <section class="view-stack">
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Combination</p>
+              <h1 id="combination-title"></h1>
+            </div>
+          </div>
+          <div id="combination-strip" class="combination-strip"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Palette Members</p>
+              <h2>Colors In This Combination</h2>
+            </div>
+          </div>
+          <div id="combination-list" class="combination-color-list"></div>
+        </section>
+      </section>
+    </template>
+
+    <template id="about-template">
+      <section class="view-stack">
+        <section class="panel about-panel">
+          <p class="section-kicker">About Sanzo Wada</p>
+          <h1>Color study, costume design, and enduring palettes.</h1>
+          <p class="lede">
+            Sanzo Wada was a Japanese painter, costume designer, and color researcher.
+            His color studies from the 1930s became the basis for the widely used
+            palette collections now associated with <em>A Dictionary of Color Combinations</em>.
+          </p>
+        </section>
+
+        <section class="panel facts-panel">
+          <div class="fact-grid">
+            <article class="fact-card">
+              <span>Dates</span>
+              <strong>1883 to 1967</strong>
+              <p>Born in Hyogo Prefecture and active across painting, design, and education.</p>
+            </article>
+            <article class="fact-card">
+              <span>Color Work</span>
+              <strong>1933 to 1934</strong>
+              <p>Published six volumes of color studies documenting more than a thousand combinations.</p>
+            </article>
+            <article class="fact-card">
+              <span>Film</span>
+              <strong>Gate of Hell</strong>
+              <p>Won the Academy Award for Best Costume Design for the 1953 film.</p>
+            </article>
+            <article class="fact-card">
+              <span>Legacy</span>
+              <strong>348 combinations</strong>
+              <p>This app focuses on the compact dictionary edition derived from those earlier studies.</p>
+            </article>
+          </div>
+        </section>
+
+      </section>
+    </template>
+
+    <template id="not-found-template">
+      <section class="panel state-panel">
+        <p class="section-kicker">Not Found</p>
+        <h1>That page does not exist.</h1>
+        <p class="lede compact">Use the top bar to go back to Colors or About.</p>
+        <a href="/" data-link class="inline-link">Go to colors</a>
+      </section>
+    </template>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
